@@ -22,7 +22,6 @@ export default function ProductDialog({ product, onClose, onAdd }) {
           <p className="eyebrow">{product.brand}</p>
           <h1 id="product-title">{product.name}</h1>
           <strong>{money(variant?.price || product.price)}</strong>
-          <p>{product.description}</p>
           <ReactMarkdown>{product.description}</ReactMarkdown>
           <label>
             Option

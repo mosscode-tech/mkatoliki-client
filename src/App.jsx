@@ -1,5 +1,6 @@
 import React from "react";
 import { useShop } from "./hooks/useShop";
+import { initAnalytics } from "./utils/analytics";
 
 // Layout & Components
 import Header from "./components/Layout/Header";
@@ -15,6 +16,9 @@ import "./styles.css";
 
 export default function App() {
   const shop = useShop();
+  useEffect(() => {
+  initAnalytics();
+}, []);
 
   return (
     <main>
