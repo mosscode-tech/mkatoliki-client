@@ -4,6 +4,15 @@ import { money } from "../utils/formatters";
 const API_URL =
   import.meta.env.VITE_API_URL || "https://api.mkatoliki.co.ke/api";
 const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || "254105380740";
+const ADMIN_PATHS = ["/adminmoscode", "/moscodeadmin"];
+
+function getViewFromLocation() {
+  const params = new URLSearchParams(window.location.search);
+  const pathname = window.location.pathname.replace(/\/$/, "");
+  return params.get("admin") === "1" || ADMIN_PATHS.some((path) => pathname.endsWith(path))
+    ? "admin"
+    : "shop";
+}
 
 export function useShop() {
   const [products, setProducts] = useState([]);
@@ -20,10 +29,7 @@ export function useShop() {
   );
   const [activeProduct, setActiveProduct] = useState(null);
 
-  const params = new URLSearchParams(window.location.search);
-  const [view, setView] = useState(
-    params.get("admin") === "1" ? "admin" : "shop"
-    );
+  const [view, setView] = useState(getViewFromLocation);
   const [filters, setFilters] = useState({
     search: "",
     category: "all",
@@ -38,7 +44,7 @@ export function useShop() {
 
   useEffect(() => {
     const handlePopState = () => {
-      setView(window.location.pathname === "/moscodeadmin" ? "admin" : "shop");
+      setView(getViewFromLocation());
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
