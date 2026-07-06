@@ -13,23 +13,27 @@ export default function Header({ view, setView, cartCount }) {
         aria-label="Open shop"
       >
         <span className="brand-mark">m</span>
-        <span>
+        <span className="brand-text">
           <strong>mkatoliki</strong>
-          <small>Catholic shop</small>
+          <small>Catholic Shop</small>
         </span>
       </button>
+
       <nav>
         <button
           className={view === "shop" ? "active" : ""}
           onClick={() => setView("shop")}
         >
-          <BookOpen size={18} /> Shop
+          <BookOpen size={16} />
+          Shop
         </button>
+
         <button
           className={view === "cart" ? "active" : ""}
           onClick={() => setView("cart")}
         >
-          <ShoppingBag size={18} /> Cart {cartCount ? `(${cartCount})` : ""}
+          <ShoppingBag size={16} />
+          Cart {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
         </button>
       </nav>
     </header>

@@ -7,6 +7,8 @@ import { trackPageView } from "./utils/analytics";
 import Header from "./components/Layout/Header";
 import ProductDialog from "./components/ProductDialog";
 import LoginDialog from "./components/LoginDialog";
+import Footer from "./components/Layout/Footer";
+
 
 // Pages
 import ShopPage from "./views/ShopView";
@@ -96,6 +98,7 @@ useEffect(() => {
           onAdd={shop.addToCart} 
         />
       )}
+      <Footer />
     </main>
   );
 }
