@@ -19,9 +19,11 @@ export function useShop() {
     JSON.parse(localStorage.getItem("mkatoliki-session") || "null"),
   );
   const [activeProduct, setActiveProduct] = useState(null);
+
+  const params = new URLSearchParams(window.location.search);
   const [view, setView] = useState(
-    window.location.pathname === "/moscodeadmin" ? "admin" : "shop",
-  );
+    params.get("admin") === "1" ? "admin" : "shop"
+    );
   const [filters, setFilters] = useState({
     search: "",
     category: "all",
