@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useShop } from "./hooks/useShop";
 import { initAnalytics } from "./utils/analytics";
+import { trackPageView } from "./utils/analytics";
 
 // Layout & Components
 import Header from "./components/Layout/Header";
@@ -19,6 +20,9 @@ export default function App() {
   useEffect(() => {
   initAnalytics();
 }, []);
+useEffect(() => {
+  trackPageView();
+}, [shop.view]);
 
   return (
     <main>
