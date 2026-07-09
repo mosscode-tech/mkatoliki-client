@@ -96,12 +96,19 @@ export default function ShopView({
           Up to {money(filters.maxPrice)}
           <input
             type="range"
-            min="900"
-            max="10000"
+            min="0"
+            max={Math.max(...filteredProducts.map((p) => p.price), 500000)}
             step="100"
-            value={filters.maxPrice}
+            value={
+              filters.maxPrice === Number.MAX_SAFE_INTEGER
+                ? Math.max(...filteredProducts.map((p) => p.price), 1000)
+                : filters.maxPrice
+            }
             onChange={(event) =>
-              setFilters({ ...filters, maxPrice: event.target.value })
+              setFilters({
+                ...filters,
+                maxPrice: Number(event.target.value),
+              })
             }
           />
         </label>
@@ -120,54 +127,61 @@ export default function ShopView({
       </section>
       <section className="product-grid">
         {loading ? (
-    <Loading text="Loading products..." />
-  ) :filteredProducts.length === 0 ? (
-    <div className="empty-state">
-      <h3>No products found</h3>
-      <p>Try changing your search or filters.</p>
-    </div>
-  ) : (filteredProducts.map((product) => (
-          <article className="product-card" key={product.id || product.slug}>
-            <button
-              className="image-button"
-              onClick={() => setActiveProduct(product)}
-              aria-label={"View " + product.name}
+          <Loading text="Loading products..." />
+        ) : filteredProducts.length === 0 ? (
+          <div className="empty-state">
+            <h3>No products found</h3>
+            <p>Try changing your search or filters.</p>
+          </div>
+        ) : (
+          filteredProducts.map((product) => (
+            <article
+              className="product-card"
+              key={product._id || product.id || product.slug}
             >
-              <img
-                src={product.images?.[0] || "/placeholder.webp"}
-                alt={product.name}
-                loading="lazy"
-                decoding="async"
-                onError={(e) => {
-                  e.currentTarget.src = "/placeholder.webp";
-                }}
-              />
-            </button>
-            <div className="product-body">
-              <p>{product.brand}</p>
-              <h2>
-                <button onClick={() => setActiveProduct(product)}>
-                  {product.name}
-                </button>
-              </h2>
-              <span>{money(product.price)}</span>
-              <div className="card-actions">
-                <button onClick={() => addToCart(product)}>
-                  <Plus size={18} /> Add
-                </button>
-                <button
-                  className={
-                    wishlist.includes(product.id) ? "icon liked" : "icon"
-                  }
-                  onClick={() => toggleWishlist(product.id)}
-                  aria-label="Toggle wishlist"
-                >
-                  <Heart size={18} />
-                </button>
+              <button
+                className="image-button"
+                onClick={() => setActiveProduct(product)}
+                aria-label={"View " + product.name}
+              >
+                <img
+                  src={product.images?.[0] || "/placeholder.webp"}
+                  alt={product.name}
+                  loading="lazy"
+                  decoding="async"
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.webp";
+                  }}
+                />
+              </button>
+              <div className="product-body">
+                <p>{product.brand}</p>
+                <h2>
+                  <button onClick={() => setActiveProduct(product)}>
+                    {product.name}
+                  </button>
+                </h2>
+                <span>{money(product.price)}</span>
+                <div className="card-actions">
+                  <button onClick={() => addToCart(product)}>
+                    <Plus size={18} /> Add
+                  </button>
+                  <button
+                    className={
+                      wishlist.includes(product._id)
+                        ? "icon liked"
+                        : "icon"
+                    }
+                    onClick={() => toggleWishlist(product._id)}
+                    aria-label="Toggle wishlist"
+                  >
+                    <Heart size={18} />
+                  </button>
+                </div>
               </div>
-            </div>
-          </article>
-        )))}
+            </article>
+          ))
+        )}
       </section>
     </>
   );

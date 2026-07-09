@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useShop } from "./hooks/useShop";
-import { initAnalytics } from "./utils/analytics";
-import { trackPageView } from "./utils/analytics";
+import { initAnalytics, trackPageView } from "./utils/analytics";
 
 // Layout & Components
 import Header from "./components/Layout/Header";
@@ -9,29 +8,31 @@ import ProductDialog from "./components/ProductDialog";
 import LoginDialog from "./components/LoginDialog";
 import Footer from "./components/Layout/Footer";
 
-
-// Pages
-import ShopPage from "./views/ShopView";
+// Pages — Notice the curly braces around ShopPage here:
+import ShopPage from "./views/ShopView"; // ✅ Clean default import
 import CartPage from "./views/CartView";
 import AdminPage from "./views/AdminView";
-
+import WishlistPage from "./views/WishlistView";
 import "./styles.css";
 
 export default function App() {
   const shop = useShop();
+
+  // Unified Analytics Lifecycle
   useEffect(() => {
-  initAnalytics();
-}, []);
-useEffect(() => {
-  trackPageView();
-}, [shop.view]);
+    initAnalytics();
+  }, []);
+
+  useEffect(() => {
+    trackPageView();
+  }, [shop.view]);
 
   return (
     <main>
-      <Header 
-        view={shop.view} 
-        setView={shop.setView} 
-        cartCount={shop.cartCount} 
+      <Header
+        view={shop.view}
+        setView={shop.setView}
+        cartCount={shop.cartCount}
       />
 
       {shop.view === "shop" && (
@@ -48,7 +49,7 @@ useEffect(() => {
           setView={shop.setView}
         />
       )}
-      
+
       {shop.view === "cart" && (
         <CartPage
           cart={shop.cart}
@@ -59,9 +60,9 @@ useEffect(() => {
           updateQuantity={shop.updateQuantity}
         />
       )}
-      
-      {shop.view === "admin" && (
-        shop.session?.user?.role === "admin" ? (
+
+      {shop.view === "admin" &&
+        (shop.session?.user?.role === "admin" ? (
           <AdminPage
             products={shop.products}
             session={shop.session}
@@ -70,9 +71,18 @@ useEffect(() => {
             apiUrl={shop.API_URL}
           />
         ) : (
-          <div className="admin-login-wrapper" style={{ maxWidth: "400px", margin: "4rem auto", padding: "0 1rem" }}>
+          <div
+            className="admin-login-wrapper"
+            style={{
+              maxWidth: "400px",
+              margin: "4rem auto",
+              padding: "0 1rem",
+            }}
+          >
             <h2 style={{ marginBottom: "0.5rem" }}>Admin Portal</h2>
-            <p style={{ color: "#666", marginBottom: "2rem" }}>Authorized access only.</p>
+            <p style={{ color: "#666", marginBottom: "2rem" }}>
+              Authorized access only.
+            </p>
             <LoginDialog
               onClose={() => {
                 shop.setView("shop");
@@ -88,14 +98,23 @@ useEffect(() => {
               }}
             />
           </div>
-        )
-      )}
+        ))}
 
       {shop.activeProduct && (
-        <ProductDialog 
-          product={shop.activeProduct} 
-          onClose={() => shop.setActiveProduct(null)} 
-          onAdd={shop.addToCart} 
+        <ProductDialog
+          product={shop.activeProduct}
+          onClose={() => shop.setActiveProduct(null)}
+          onAdd={shop.addToCart}
+        />
+      )}
+
+      {shop.view === "wishlist" && (
+        <WishlistPage
+          wishlistProducts={shop.wishlistProducts}
+          addToCart={shop.addToCart}
+          toggleWishlist={shop.toggleWishlist}
+          setActiveProduct={shop.setActiveProduct}
+          setView={shop.setView}
         />
       )}
       <Footer />
